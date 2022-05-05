@@ -32,6 +32,11 @@ urlpatterns = [
         name='add',
     ),
     path(
+        'fig/',
+        login_required(views.FigureAddView.as_view()),
+        name='fig',
+    ),
+    path(
         '<int:pk>/edit/',
         login_required(views.WeightUpdateView.as_view()),
         name='edit',
@@ -56,4 +61,5 @@ urlpatterns = [
         views.overview,
         name='overview',
     ),
+
 ]

@@ -31,7 +31,7 @@ class WeightEntry(models.Model):
     """
     date = models.DateField(verbose_name=_('Date'))
     weight = models.DecimalField(
-        verbose_name=_('Weight'),
+        verbose_name=_('Weight (kg)'),
         max_digits=5,
         decimal_places=2,
         validators=[MinValueValidator(30), MaxValueValidator(600)]
@@ -41,6 +41,31 @@ class WeightEntry(models.Model):
         verbose_name=_('User'),
         on_delete=models.CASCADE,
     )
+    # waist_circum = models.DecimalField(
+    #     verbose_name = ('waist_circumference (cm)'),
+    #     max_digits = 5,
+    #     decimal_places = 2,
+    #     validators=[MinValueValidator(30), MaxValueValidator(600)]
+    # )
+    # height = models.DecimalField(
+    #     verbose_name=('height (cm)'),
+    #     max_digits=5,
+    #     decimal_places=2,
+    #     validators=[MinValueValidator(30), MaxValueValidator(600)]
+    # )
+    # body_fat = models.DecimalField(
+    #     verbose_name = ('body fat percentage (%)'),
+    #     max_digits = 5,
+    #     decimal_places = 2,
+    #     validators=[MinValueValidator(0), MaxValueValidator(100)]
+    # )
+    # heart_rate = models.DecimalField(
+    #     verbose_name=('heart rate (BPM)'),
+    #     max_digits=5,
+    #     decimal_places=2,
+    #     validators=[MinValueValidator(0), MaxValueValidator(300)]
+    # )
+
     """
     The user the weight entry belongs to.
 
@@ -56,6 +81,89 @@ class WeightEntry(models.Model):
         Metaclass to set some other properties
         """
         verbose_name = _('Weight entry')
+        ordering = [
+            "date",
+        ]
+        get_latest_by = "date"
+        unique_together = ("date", "user")
+
+    def __str__(self):
+        """
+        Return a more human-readable representation
+        """
+        return "{0}: {1:.2f} kg".format(self.date, self.weight)
+
+    def get_owner_object(self):
+        """
+        Returns the object that has owner information
+        """
+        return self
+
+
+class FigureEntry(models.Model):
+    """
+    Model for a weight point
+    """
+    date = models.DateField(verbose_name=_('Date'))
+    weight = models.DecimalField(
+        verbose_name=_('Weight (kg)'),
+        max_digits=5,
+        decimal_places=2,
+        validators=[MinValueValidator(30), MaxValueValidator(600)]
+    )
+    waist = models.DecimalField(
+        verbose_name = ('waist (cm)'),
+        max_digits = 5,
+        decimal_places = 2,
+        validators=[MinValueValidator(30), MaxValueValidator(600)]
+    )
+    body_fat = models.DecimalField(
+        verbose_name = ('body fat percentage (%)'),
+        max_digits = 5,
+        decimal_places = 2,
+        validators=[MinValueValidator(0), MaxValueValidator(100)]
+    )
+    bust = models.DecimalField(
+        verbose_name=('bust (cm)'),
+        max_digits=5,
+        decimal_places=2,
+        validators=[MinValueValidator(0), MaxValueValidator(300)]
+    )
+
+    upper_arm = models.DecimalField(
+        verbose_name=('Upper arm (cm)'),
+        max_digits=5,
+        decimal_places=2,
+        validators=[MinValueValidator(0), MaxValueValidator(300)]
+    )
+    forearm = models.DecimalField(
+        verbose_name=('Forearm (cm)'),
+        max_digits=5,
+        decimal_places=2,
+        validators=[MinValueValidator(0), MaxValueValidator(300)]
+    )
+
+    user = models.ForeignKey(
+        User,
+        verbose_name=_('User'),
+        on_delete=models.CASCADE,
+    )
+
+    """
+    The user the weight entry belongs to.
+
+    NOTE: this field is neither marked as editable false nor is it excluded in
+    the form. This is done intentionally because otherwise it's *very* difficult
+    and ugly to validate the uniqueness of unique_together fields and one field
+    is excluded from the form. This does not pose any security risk because the
+    value from the form is ignored and the request's user always used.
+    """
+
+    class Meta:
+        """
+        Metaclass to set some other properties
+        """
+        verbose_name = _('Figure entry')
         ordering = [
             "date",
         ]

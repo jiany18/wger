@@ -55,7 +55,9 @@ from wger.utils.generic_views import (
 from wger.utils.helpers import check_access
 from wger.weight import helpers
 from wger.weight.forms import WeightForm
+from wger.weight.forms import FigureForm
 from wger.weight.models import WeightEntry
+from wger.weight.models import FigureEntry
 
 
 logger = logging.getLogger(__name__)
@@ -84,6 +86,36 @@ class WeightAddView(WgerFormMixin, CreateView):
         """
         form.instance.user = self.request.user
         return super(WeightAddView, self).form_valid(form)
+
+    def get_success_url(self):
+        """
+        Return to overview with username
+        """
+        return reverse('weight:overview')
+
+class FigureAddView(WgerFormMixin, CreateView):
+    """
+    Generic view to add a new weight entry
+    """
+    model = FigureEntry
+    form_class = FigureForm
+    title = gettext_lazy('Add Figure entry')
+
+    def get_initial(self):
+        """
+        Set the initial data for the form.
+
+        Read the comment on weight/models.py WeightEntry about why we need
+        to pass the user here.
+        """
+        return {'user': self.request.user, 'date': datetime.date.today()}
+
+    def form_valid(self, form):
+        """
+        Set the owner of the entry here
+        """
+        form.instance.user = self.request.user
+        return super(FigureAddView, self).form_valid(form)
 
     def get_success_url(self):
         """

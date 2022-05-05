@@ -34,6 +34,7 @@ from crispy_forms.layout import Layout
 from wger.utils.constants import DATE_FORMATS
 from wger.utils.widgets import Html5DateInput
 from wger.weight.models import WeightEntry
+from wger.weight.models import FigureEntry
 
 
 CSV_DATE_FORMAT = (
@@ -69,6 +70,16 @@ class WeightForm(ModelForm):
 
     class Meta:
         model = WeightEntry
+        exclude = []
+        widgets = {
+            'user': widgets.HiddenInput(),
+        }
+
+class FigureForm(ModelForm):
+    date = DateField(input_formats=DATE_FORMATS, widget=Html5DateInput())
+
+    class Meta:
+        model = FigureEntry
         exclude = []
         widgets = {
             'user': widgets.HiddenInput(),

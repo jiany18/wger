@@ -36,6 +36,7 @@ from wger.utils.helpers import DecimalJsonEncoder
 from wger.weight.models import WeightEntry
 
 
+
 logger = logging.getLogger(__name__)
 
 

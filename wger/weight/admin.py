@@ -16,7 +16,8 @@
 from django.contrib import admin
 
 # wger
-from wger.weight.models import WeightEntry
+from wger.weight.models import WeightEntry, FigureEntry
 
 
 admin.site.register(WeightEntry)
+admin.site.register(FigureEntry)
